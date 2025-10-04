@@ -1,0 +1,15 @@
+# Editors:
+.vscode/
+.idea/
+
+# Python:
+__pycache__/
+.venv/
+.env
+
+# JS:
+node_modules/
+jspm_packages/
+
+# Mac:
+.DS_Store
