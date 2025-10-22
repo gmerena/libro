@@ -2,13 +2,13 @@ pipeline {
     agent any
 
     stages {
-        stage('Setup venv') {
+        stage('Setup venv & UV') {
             steps {
                 sh '''
                 python3 -m venv .venv
                 . .venv/bin/activate
-                pip install --upgrade pip
-                pip install ruff pytest
+                pip install --upgrade pip uv
+                uv sync
                 '''
             }
         }
