@@ -4,7 +4,7 @@ from httpx import AsyncClient
 
 @pytest.mark.asyncio
 async def test_root_endpoint(client: AsyncClient):
-    response = await client.get("/")
+    response = await client.get("/api/")
     assert response.status_code == 200
     data = response.json()
     assert "message" in data
