@@ -1,17 +1,17 @@
-from typing import Generic, TypeVar
+from typing import TypeVar
 
 from pydantic import BaseModel
 
 T = TypeVar("T")
 
 
-class ResponseModel(BaseModel, Generic[T]):
+class ResponseModel[T](BaseModel):
     success: bool = True
     message: str = "Művelet sikeres"
     data: T | None = None
 
 
-class PaginatedResponse(BaseModel, Generic[T]):
+class PaginatedResponse[T](BaseModel):
     items: list[T]
     total: int
     page: int = 1

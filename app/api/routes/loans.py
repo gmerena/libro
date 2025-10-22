@@ -1,7 +1,6 @@
 from datetime import datetime
-from typing import Optional
 
-from fastapi import APIRouter, Body, HTTPException, Query, status
+from fastapi import APIRouter, HTTPException, Query, status
 
 from app.api.deps import DatabaseDep
 
@@ -87,7 +86,7 @@ async def get_book_loan_history(db: DatabaseDep, book_id: int):
     return [Loan(**row) for row in rows]
 
 
-@router.get("/book/{book_id}/active", response_model=Optional[Loan])
+@router.get("/book/{book_id}/active", response_model=Loan | None)
 async def get_book_active_loan(db: DatabaseDep, book_id: int):
     row = await db.fetchrow("SELECT * FROM loans WHERE book_id = $1 AND return_date IS NULL", book_id)
     return Loan(**row) if row else None
@@ -98,8 +97,7 @@ async def get_overdue_loans(db: DatabaseDep, days: int = 30):
     if days < 1:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="A napok száma legalább 1 kell legyen")
 
-    query = (
-        """
+    query = f"""
         SELECT 
             l.*,
             m.name as member_name,
@@ -111,11 +109,9 @@ async def get_overdue_loans(db: DatabaseDep, days: int = 30):
         JOIN members m ON l.member_id = m.id
         JOIN books b ON l.book_id = b.id
         WHERE l.return_date IS NULL 
-        AND l.loan_date < NOW() - INTERVAL '%s days'
+        AND l.loan_date < NOW() - INTERVAL '{days} days'
         ORDER BY l.loan_date ASC
     """
-        % days
-    )
 
     rows = await db.fetch(query)
     return [LoanWithDetails(**row) for row in rows]
@@ -159,7 +155,8 @@ async def create_loan(db: DatabaseDep, loan_in: LoanCreate):
 
 
 @router.patch("/{loan_id}/return", response_model=ResponseModel[Loan])
-async def return_loan(db: DatabaseDep, loan_id: int, return_date: datetime | None = Body(None, description="Visszahozás dátuma (alapértelmezett: most)")):
+async def return_loan(db: DatabaseDep, loan_id: int, return_date: datetime | None = None):
+    """Kölcsönzés visszahozása. Ha return_date nincs megadva, az aktuális időpont kerül beállításra."""
     loan = await db.fetchrow("SELECT * FROM loans WHERE id = $1 AND return_date IS NULL", loan_id)
     if not loan:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Aktív kölcsönzés nem található")
@@ -194,5 +191,4 @@ async def delete_loan(db: DatabaseDep, loan_id: int):
 
         await db.execute("DELETE FROM loans WHERE id = $1", loan_id)
 
-    return ResponseModel(message="Kölcsönzés sikeresen törölve.")
     return ResponseModel(message="Kölcsönzés sikeresen törölve.")
