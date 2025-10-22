@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'host' }
+    agent any
 
     stages {
         stage('Setup venv') {
@@ -21,12 +21,6 @@ pipeline {
         stage('Test') {
             steps {
                 sh '. .venv/bin/activate && pytest tests/test_api.py'
-            }
-        }
-
-        stage('Build Docker') {
-            steps {
-                sh 'docker build -t libro:latest .'
             }
         }
     }
