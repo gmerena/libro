@@ -1,6 +1,19 @@
 pipeline {
     agent any
 
+    environment {
+        DB_HOST = 'postgres-service'
+        DB_PORT = '5432'
+        DB_USER = 'postgres'
+        DB_PASSWORD = 'admin'
+        DB_NAME = 'libro'
+
+        DB_POOL_MIN_SIZE = '1'
+        DB_POOL_MAX_SIZE = '10'
+
+        API_PREFIX = '/api'
+    }
+
     stages {
         stage('Setup venv & UV') {
             steps {
