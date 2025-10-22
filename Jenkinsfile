@@ -15,13 +15,19 @@ pipeline {
 
         stage('Lint') {
             steps {
-                sh '. .venv/bin/activate && ruff src/ tests/'
+                sh '''
+                . .venv/bin/activate
+                ruff check
+                '''
             }
         }
 
         stage('Test') {
             steps {
-                sh '. .venv/bin/activate && pytest tests/test_api.py'
+                sh '''
+                . .venv/bin/activate
+                pytest tests/test_api.py
+                '''
             }
         }
     }
