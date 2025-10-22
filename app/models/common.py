@@ -1,4 +1,4 @@
-from typing import Generic, Optional, TypeVar
+from typing import Generic, TypeVar
 
 from pydantic import BaseModel
 
@@ -8,7 +8,7 @@ T = TypeVar("T")
 class ResponseModel(BaseModel, Generic[T]):
     success: bool = True
     message: str = "Művelet sikeres"
-    data: Optional[T] = None
+    data: T | None = None
 
 
 class PaginatedResponse(BaseModel, Generic[T]):
@@ -27,5 +27,5 @@ class PaginatedResponse(BaseModel, Generic[T]):
 class ErrorResponse(BaseModel):
     success: bool = False
     message: str
-    error_code: Optional[str] = None
-    details: Optional[dict] = None
+    error_code: str | None = None
+    details: dict | None = None

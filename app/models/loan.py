@@ -1,7 +1,6 @@
 from datetime import datetime
-from typing import Optional
 
-from pydantic import BaseModel, Field, field_validator, validator
+from pydantic import BaseModel, Field, field_validator
 
 
 class LoanBase(BaseModel):
@@ -14,7 +13,7 @@ class LoanCreate(LoanBase):
 
 
 class LoanUpdate(BaseModel):
-    return_date: Optional[datetime] = None
+    return_date: datetime | None = None
 
 
 class LoanReturn(BaseModel):
@@ -24,7 +23,7 @@ class LoanReturn(BaseModel):
 class Loan(LoanBase):
     id: int
     loan_date: datetime
-    return_date: Optional[datetime] = None
+    return_date: datetime | None = None
 
     class Config:
         from_attributes = True

@@ -1,0 +1,14 @@
+FROM jenkins/jenkins:lts
+
+USER root
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        python3 python3-venv python3-pip \
+        git unzip tzdata && \
+    rm -rf /var/lib/apt/lists/*
+
+ENV TZ="Europe/Budapest"
+
+USER jenkins
+WORKDIR /var/jenkins_home

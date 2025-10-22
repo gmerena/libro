@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
       - name: jenkins
-        image: jenkins/jenkins:lts-jdk17
+        image: custom-jenkins:latest
         ports:
           - containerPort: 8080
           - containerPort: 50000

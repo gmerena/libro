@@ -6,7 +6,7 @@ from fastapi import APIRouter, Body, HTTPException, Query, status
 from app.api.deps import DatabaseDep
 
 from ...models.common import PaginatedResponse, ResponseModel
-from ...models.loan import Loan, LoanCreate, LoanUpdate, LoanWithDetails
+from ...models.loan import Loan, LoanCreate, LoanWithDetails
 
 router = APIRouter(prefix="/loans", tags=["loans"])
 
@@ -159,7 +159,7 @@ async def create_loan(db: DatabaseDep, loan_in: LoanCreate):
 
 
 @router.patch("/{loan_id}/return", response_model=ResponseModel[Loan])
-async def return_loan(db: DatabaseDep, loan_id: int, return_date: Optional[datetime] = Body(None, description="Visszahozás dátuma (alapértelmezett: most)")):
+async def return_loan(db: DatabaseDep, loan_id: int, return_date: datetime | None = Body(None, description="Visszahozás dátuma (alapértelmezett: most)")):
     loan = await db.fetchrow("SELECT * FROM loans WHERE id = $1 AND return_date IS NULL", loan_id)
     if not loan:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Aktív kölcsönzés nem található")
