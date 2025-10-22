@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.13-slim-bookworm'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
+    agent any
 
     environment {
         VENV = "${WORKSPACE}/.venv"
@@ -12,26 +7,30 @@ pipeline {
     }
 
     stages {
-        stage('Setup venv & Install dependencies') {
+        stage('Setup venv') {
             steps {
                 sh '''
-                    python -m venv $VENV
-                    pip install --upgrade pip
-                    pip install uv ruff pytest
-                    uv sync
+                    python3 -m venv $VENV
+                    source $VENV/bin/activate
                 '''
             }
         }
 
         stage('Lint') {
             steps {
-                sh 'ruff app/ tests/'
+                sh '''
+                    source $VENV/bin/activate
+                    ruff src/ tests/
+                '''
             }
         }
 
         stage('Test') {
             steps {
-                sh 'pytest tests/test_api.py'
+                sh '''
+                    source $VENV/bin/activate
+                    pytest tests/test_api.py
+                '''
             }
         }
 
