@@ -25,7 +25,7 @@ pipeline {
 
         stage('Lint') {
             steps {
-                sh 'ruff src/ tests/'
+                sh 'ruff app/ tests/'
             }
         }
 

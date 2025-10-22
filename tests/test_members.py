@@ -4,7 +4,6 @@ from httpx import AsyncClient
 
 @pytest.mark.asyncio
 async def test_get_members_empty(client: AsyncClient):
-    """Test getting members when database might be empty."""
     response = await client.get("/api/members")
     assert response.status_code == 200
     data = response.json()
@@ -15,7 +14,6 @@ async def test_get_members_empty(client: AsyncClient):
 
 @pytest.mark.asyncio
 async def test_get_members_pagination(client: AsyncClient):
-    """Test members endpoint with pagination parameters."""
     response = await client.get("/api/members?take=5&skip=0")
     assert response.status_code == 200
     data = response.json()
@@ -27,10 +25,9 @@ async def test_get_members_pagination(client: AsyncClient):
 
 @pytest.mark.asyncio
 async def test_create_member_invalid_email(client: AsyncClient):
-    """Test creating a member with invalid email."""
     member_data = {"name": "Test User", "email": "invalid-email"}
     response = await client.post("/api/members", json=member_data)
-    assert response.status_code == 422  # Validation error
+    assert response.status_code == 422
 
 
 @pytest.mark.asyncio
