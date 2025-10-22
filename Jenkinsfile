@@ -1,36 +1,26 @@
 pipeline {
-    agent any
-
-    environment {
-        VENV = "${WORKSPACE}/.venv"
-        PATH = "${WORKSPACE}/.venv/bin:${env.PATH}"
-    }
+    agent { label 'host' }
 
     stages {
         stage('Setup venv') {
             steps {
                 sh '''
-                    python3 -m venv $VENV
-                    source $VENV/bin/activate
+                python3 -m venv .venv
+                . .venv/bin/activate
+                pip install --upgrade pip
                 '''
             }
         }
 
         stage('Lint') {
             steps {
-                sh '''
-                    source $VENV/bin/activate
-                    ruff src/ tests/
-                '''
+                sh '. .venv/bin/activate && ruff src/ tests/'
             }
         }
 
         stage('Test') {
             steps {
-                sh '''
-                    source $VENV/bin/activate
-                    pytest tests/test_api.py
-                '''
+                sh '. .venv/bin/activate && pytest tests/test_api.py'
             }
         }
 
