@@ -14,6 +14,8 @@ class Settings(BaseSettings):
 
     API_PREFIX: str = Field(..., env="API_PREFIX")
 
+    ENABLE_METRICS: bool = Field(False, env="ENABLE_METRICS")
+
     class Config:
         env_file = ".env"
 

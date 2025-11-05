@@ -7,7 +7,7 @@ from fastapi import Depends, HTTPException
 from app.core.database import db_manager
 
 
-async def get_db() -> AsyncGenerator[asyncpg.Connection, None]:
+async def get_db() -> AsyncGenerator[asyncpg.Connection]:
     pool = db_manager.pool
 
     if not pool:
@@ -18,3 +18,4 @@ async def get_db() -> AsyncGenerator[asyncpg.Connection, None]:
 
 
 DatabaseDep = Annotated[asyncpg.Connection, Depends(get_db)]
+

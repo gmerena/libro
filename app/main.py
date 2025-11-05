@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from prometheus_fastapi_instrumentator import Instrumentator
 
 from app.api.api import router
 from app.core.config import settings
@@ -17,5 +18,14 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Libro Könyvtár API", description="SZTE Felhő és DevOps alkalmazásai - Könyvtár kezelő rendszer", version="1.0.0", lifespan=lifespan)
+
+if settings.ENABLE_METRICS:
+    Instrumentator().instrument(app).expose(app, endpoint="/metrics")
+
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
+
 
 app.include_router(router, prefix=settings.API_PREFIX)

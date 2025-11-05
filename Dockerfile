@@ -1,9 +1,9 @@
-FROM python:3.13-slim-bookworm
-
-COPY --from=ghcr.io/astral-sh/uv:0.7.8 /uv /uvx /bin/
+FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim
 
 ENV TZ="Europe/Budapest" \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends util-linux tzdata libpq-dev libmagic1 file && \
@@ -13,12 +13,14 @@ RUN echo "export PS1='[\033[01;32m]\u@\h:[\033[01;34m]\w[\033[00m]$ '" >> ~/.bas
 
 WORKDIR /app
 
-COPY pyproject.toml uv.lock ./
-
-RUN uv sync --locked
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --locked --no-install-project
 
 COPY . .
 
-ENV PATH="/app/.venv/bin/:$PATH"
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]             
