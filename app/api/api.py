@@ -11,4 +11,4 @@ router.include_router(loans_router, prefix="/loans", tags=["loans"])
 
 @router.get("/")
 async def read_root():
-    return {"message": "Libro Könyvtár API", "version": "1.0.0", "endpoints": {"members": "/members", "books": "/books", "loans": "/loans"}}
+    return {"message": "Libro Könyvtár API", "version": "1.0.0"}

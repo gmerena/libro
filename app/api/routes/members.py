@@ -35,7 +35,7 @@ async def create_member(db: DatabaseDep, member_in: MemberCreate):
 
     row = await db.fetchrow(
         """
-        INSERT INTO members (name, email, join_date)
+        INSERT INTO members (name, email, joined_at)
         VALUES ($1, $2, NOW())
         RETURNING *
         """,

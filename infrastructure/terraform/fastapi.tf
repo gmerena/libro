@@ -74,6 +74,11 @@ resource "kubernetes_deployment" "libro" {
             name  = "API_PREFIX"
             value = "/api"
           }
+
+          env {
+            name  = "ENABLE_METRICS"
+            value = "true"
+          }
         }
       }
     }

@@ -13,3 +13,5 @@ jspm_packages/
 
 # Mac:
 .DS_Store
+
+logs/
