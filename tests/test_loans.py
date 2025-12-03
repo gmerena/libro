@@ -27,7 +27,6 @@ async def test_get_active_loans_only(client: AsyncClient):
     assert response.status_code == 200
     data = response.json()
     assert "items" in data
-    # All returned loans should have null return_date
     for loan in data["items"]:
         assert loan["return_date"] is None
 

@@ -32,7 +32,6 @@ async def test_create_member_invalid_email(client: AsyncClient):
 
 @pytest.mark.asyncio
 async def test_get_nonexistent_member(client: AsyncClient):
-    """Test getting a member that doesn't exist."""
     response = await client.get("/api/members/99999")
     assert response.status_code == 404
     data = response.json()
